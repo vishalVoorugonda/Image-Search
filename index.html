@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Image Searcher App</title>
+</head>
+<body>
+    <h1>Image Search App</h1>
+    <form>
+        <input type="text" id="search-input" placeholder="Search for images">
+        <button id="search-button" type="submit">Search</button>
+    </form>
+
+    <div class="search-results">
+    </div>
+
+    <button id="show-more-button">Show more</button>
+    
+    <script src="data.js" type="module"></script>
+    <script type="module">
+        import data from './data.js';
+
+        const container = document.querySelector(".search-results");
+        const form = document.querySelector('form');
+        let itemsToShow = 6;
+
+        
+        function displayItems(limit) {
+            container.innerHTML = '';
+            data.slice(0, limit).forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'search-result';
+                div.innerHTML = `<img src="${item.img}" alt="${item.name}">
+                                 <a href="${item.href}" target="_blank">${item.name}</a>`;
+                container.appendChild(div);
+            });
+        }
+
+       
+        function performSearch() {
+            const searchInput = document.getElementById('search-input').value.toLowerCase();
+            const filteredData = data.filter(item =>
+                item.name.toLowerCase().includes(searchInput)
+            );
+
+            container.innerHTML = '';
+            if (filteredData.length > 0) {
+                filteredData.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'search-result';
+                    div.innerHTML = `<img src="${item.img}" alt="${item.name}">
+                                     <a href="${item.href}" target="_blank">${item.name}</a>`;
+                    container.appendChild(div);
+                });
+            } else {
+                container.innerHTML = '<p>No results found</p>';
+            }
+        }
+
+        // Event listeners
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            performSearch();
+        });
+
+        document.getElementById('show-more-button').addEventListener('click', () => {
+            itemsToShow += 3; 
+            displayItems(itemsToShow);
+        });
+
+        displayItems(itemsToShow);
+    </script>
+</body>
+</html>
